@@ -35,10 +35,11 @@ function calculateAge(userName , DOB){
     let seconds = ageInDateFormat.getSeconds();
     let minutes = ageInDateFormat.getMinutes();
     let hours = ageInDateFormat.getHours();
+    let days = ageInDateFormat.getDay();
     let months = ageInDateFormat.getMonth();
     let years = ageInDateFormat.getFullYear() - 1970;
     let message = "Hello " + userName  + " Your Age is " + years + " Years " + 
-    months + " Months " + hours + " Hours " + minutes + " Minutes " + seconds + " Seconds";
+    months + " Months " + days + " Days " + hours + " Hours " + minutes + " Minutes " + seconds + " Seconds";
     document.getElementById("demo").innerHTML = message;
 }
 let userName = userInput();
