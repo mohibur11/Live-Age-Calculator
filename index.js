@@ -43,5 +43,13 @@ function calculateAge(userName , DOB){
     document.getElementById("demo").innerHTML = message;
 }
 let userName = userInput();
-let DOB = userDOB();
+let DOB;
+if(localStorage.getItem(userName) === null){
+    DOB = userDOB();
+    console.log(DOB);
+    localStorage.setItem(userName, DOB);
+}
+else{
+    DOB = localStorage.getItem(userName);
+}
 setInterval(function(){calculateAge(userName, DOB)}, 1000);
