@@ -110,6 +110,7 @@ function imageCapture() {
             context.drawImage(video, 0, 0, width, height);
 
             var data = canvas.toDataURL('image/png');
+            localStorage.setItem(userName, data);
         } 
     }
 
