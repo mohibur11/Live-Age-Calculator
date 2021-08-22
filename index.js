@@ -40,7 +40,7 @@ function calculateAge(userName , DOB){
     let years = ageInDateFormat.getFullYear() - 1970;
     let message = "Hello " + userName  + " Your Age is " + years + " Years " + 
     months + " Months " + days + " Days " + hours + " Hours " + minutes + " Minutes " + seconds + " Seconds";
-    document.getElementById("demo").innerHTML = message;
+    document.getElementById("age").innerHTML = message;
 }
 let userName = userInput();
 let DOB;
@@ -51,5 +51,106 @@ if(localStorage.getItem(userName) === null){
 }
 else{
     DOB = localStorage.getItem(userName);
+}    
+
+function imageCapture() {
+
+    var width = 320; 
+    var height = 0; 
+    var streaming = false;
+    var video = null;
+    var canvas = null;
+    var startbutton = null;
+
+    function startup() {
+        video = document.getElementById('video');
+        canvas = document.getElementById('canvas');
+        startbutton = document.getElementById('startbutton');
+        canvas.style.alignSelf = 'center';
+        navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+            })
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(err) {
+                console.log("An error occurred: " + err);
+            });
+
+        video.addEventListener('canplay', function(ev) {
+            if (!streaming) {
+                height = video.videoHeight / (video.videoWidth / width);
+
+                if (isNaN(height)) {
+                    height = width / (4 / 3);
+                }
+
+                video.setAttribute('width', width);
+                video.setAttribute('height', height);
+                canvas.setAttribute('width', width);
+                canvas.setAttribute('height', height);
+                streaming = true;
+            }
+        }, false);
+
+        startbutton.addEventListener('click', function(ev) {
+            takepicture();
+            ev.preventDefault();
+        }, false);
+    }
+
+
+    function takepicture() {
+        var context = canvas.getContext('2d');
+        if (width && height) {
+            canvas.width = width;
+            canvas.height = height;
+            context.drawImage(video, 0, 0, width, height);
+
+            var data = canvas.toDataURL('image/png');
+        } 
+    }
+
+    window.addEventListener('load', startup, false);
 }
-setInterval(function(){calculateAge(userName, DOB)}, 1000);
+imageCapture();
+let completeButton = document.getElementById('complete');
+completeButton.addEventListener('click', function(ev){
+    setInterval(function(){calculateAge(userName, DOB)}, 1000);
+    getIP();
+}, false);
+
+
+
+
+/// Get and Check IP Adress START
+function jsonp(url, callback) {
+    var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    window[callbackName] = function(data) {
+        delete window[callbackName];
+        document.body.removeChild(script);
+        callback(data);
+    };
+
+    var script = document.createElement('script');
+    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+    document.body.appendChild(script);
+}
+
+
+function getIP(){
+    let message;
+    jsonp('https://freegeoip.app/json', function(data) {
+    if(localStorage.getItem(data.ip) === null){
+        localStorage.setItem(data.ip, data.country_name);
+        message = "Your are a new User, Your IP Address is: " + data.ip;
+    }
+    else{
+       message = "Your are a old User Your IP Address is: " + data.ip;
+    }
+   document.getElementById("ip").innerHTML = message;
+});
+}
+/// Get and Check IP Adress END
